@@ -1,34 +1,43 @@
 ﻿using System.Text;
+
 namespace Aeon.classes
 {
     public class CharacterCreation
     {
         public static Player playerChar = new Player();
+
         public void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
-            int width = 100;
-            int height = 20; 
+            int mainWindowWidth = 110;
+            int mainWindowHeight = 20;
+            int commandWindowHeight = 20;
+            int commandWindowWidth = 30;
+            int totalWindowWidth = mainWindowWidth + commandWindowWidth + 5;
+            int totalWindowHeight = mainWindowHeight + commandWindowHeight + 5;
+
             int startingRow = 1; // Print below top border
-            int cursorPosition = 5; 
+            int cursorPositionX = 5; // Makes sense
+            int cursorPositionY = 3; // Is completely incomprehensible. Why? Wtf, help
+            int commandWindowXPosition = mainWindowWidth + 5; // X position for command window
+
+            Console.SetWindowSize(totalWindowWidth, totalWindowHeight);
+            Console.SetBufferSize(totalWindowWidth, totalWindowHeight);
             
-            // WindowSize + Buffer has to be larger than generated Window.
-            Console.SetWindowSize(width+5, height+5);
-            Console.SetBufferSize(width+5, height+5);
+            CreationWindow(mainWindowHeight, mainWindowWidth); 
+            UserInputWindow(mainWindowHeight, mainWindowWidth);
+            CreationCommandWindow(commandWindowHeight, commandWindowWidth);
             
-            CreationWindow(height, width); 
-            UserInputWindow(height, width);
+            CenteredConsoleText("This is a test of the console window system", mainWindowWidth, ref startingRow);
+            CenteredConsoleText("Another test line", mainWindowWidth, ref startingRow);
+            CenteredConsoleText("A shorter line", mainWindowWidth, ref startingRow);
+            CenteredConsoleText("Yet another line to test", mainWindowWidth, ref startingRow);
+            CenteredConsoleText("Yet another line to test test test test test test test test test test", mainWindowWidth, ref startingRow);
             
-            CenteredConsoleText("This is a test of the console window system", width, ref startingRow);
-            CenteredConsoleText("Another test line", width, ref startingRow);
-            CenteredConsoleText("A shorter line", width, ref startingRow);
-            CenteredConsoleText("Yet another line to test", width, ref startingRow);
-            CenteredConsoleText("Yet another line to test test test test test test test test test test", width, ref startingRow);
-            
-            Console.SetCursorPosition(cursorPosition, height); // Set cursor below game window
+            Console.SetCursorPosition(cursorPositionX, cursorPositionY); // Set cursor below game window
             Console.ReadLine(); // Prevent window from closing
         }
-        
+        // Main Window ------------
         static void CreationWindow(int height, int width)
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -53,6 +62,7 @@ namespace Aeon.classes
             Console.Write(new string('─', width - 2));
             Console.Write("◼");
         }
+        // Input Window ------------
         static void UserInputWindow(int height, int width)
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -73,11 +83,40 @@ namespace Aeon.classes
             Console.Write(new string('─', width - 2));
             Console.Write("◼");
         }
-        
+        // Clamp to - Input Window ------------
+
+        // Command List Window ------------
+        static void CreationCommandWindow(int height, int width)
+        {
+            Console.OutputEncoding = Encoding.UTF8;
+            int commandWindowXPosition = 111; // Set X position for command window
+            
+            // Top Border
+            Console.SetCursorPosition(commandWindowXPosition, 0); // Set cursor position for command window
+            Console.Write("◼");
+            Console.Write(new string('─', width - 2));
+            Console.Write("◼");
+
+            // Left and Right Borders
+            for (int i = 1; i < height - 1; i++)
+            {
+                Console.SetCursorPosition(commandWindowXPosition, i);
+                Console.Write("│");
+                Console.SetCursorPosition(commandWindowXPosition + width - 1, i);
+                Console.Write("│");
+            }
+
+            // Bottom Border
+            Console.SetCursorPosition(commandWindowXPosition, height - 1);
+            Console.Write("◼");
+            Console.Write(new string('─', width - 2));
+            Console.Write("◼");
+        }
+        // Center Console Text ------------
         static void CenteredConsoleText(string text, int width, ref int row)
         {
             int maxWidth = width - 2;
-            
+
             // Truncate text if too long
             if (text.Length > maxWidth) { text = text.Substring(0, maxWidth); }
 
@@ -86,7 +125,7 @@ namespace Aeon.classes
 
             // Ensure within bounds
             if (leftPadding < 0) leftPadding = 0;
-            
+
             // Check if current row within area
             if (row > 0 && row < Console.WindowHeight - 1)
             {
