@@ -1,4 +1,5 @@
-﻿using Aeon.classes;
+﻿using System.Text;
+using Aeon.classes;
 
 namespace Aeon {
     class Program
@@ -12,6 +13,7 @@ namespace Aeon {
         }
         static void Start()
         {
+            Console.OutputEncoding = Encoding.UTF8;
             Console.WriteLine("Aeon Dungeon");
             Console.WriteLine("Enter your name: ");
             playerChar.name = Console.ReadLine();
