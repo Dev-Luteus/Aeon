@@ -45,21 +45,56 @@ namespace Aeon.classes
             string userInput = ReadLimitedInput(30); // Limit : 30 char
         }
 
-        // All the Dialogue messages ( to make Main() more readable )
+        // Main Window Story Text Function ------------
         public static void MainWindowDialogue(int mainWindowHeight, int mainWindowWidth, ref int startingRow)
         {
-            CenteredConsoleText("This is a test of the console window system", mainWindowWidth, ref startingRow);
-            CenteredConsoleText("Another test line", mainWindowWidth, ref startingRow);
-            CenteredConsoleText("A shorter line", mainWindowWidth, ref startingRow);
-            CenteredConsoleText("Yet another line to test", mainWindowWidth, ref startingRow);
-            CenteredConsoleText("Yet another line to test test test test test test test test test test", mainWindowWidth, ref startingRow);
+            // Define the story string
+            string story = "This is a test of the console window system. " +
+                           "Another test line. A shorter line. Yet another line to test. " +
+                           "Yet another line to test test test test test test test test test test. " +
+                           "This is to ensure that the User does not exceed the UserInputWindow, " +
+                           "and doesn't overwrite its borders. A long sentence to test the wrapping functionality." +
+                           "peepeepoopooo I need more text to make sure that . . . the string can mess up my padding " +
+                           "does that work? w h a t a b o u t t h i s ? Seems my padding is invincible. ";
+            
+            // Display
+            MainWindowDialogueManager(story, mainWindowWidth, ref startingRow);
+        }
+
+        // Main Window Story Text Manager Function ------------
+        public static void MainWindowDialogueManager(string story, int maxWidth, ref int startingRow)
+        {
+            int maxLineWidth = maxWidth - 4; // Adjust
+            string[] words = story.Split(' '); // Split story into words
+            StringBuilder currentLine = new StringBuilder();
+
+            foreach (var word in words)
+            {
+                if (currentLine.Length + word.Length + 1 > maxLineWidth) 
+                {
+                    // Print line, reset
+                    MainWindowTextRegular(currentLine.ToString(), maxWidth, ref startingRow);
+                    currentLine.Clear();
+                }
+                
+                // Append the word to the current line
+                if (currentLine.Length > 0)
+                {
+                    currentLine.Append(" "); // Space before word, if not first word
+                }
+                currentLine.Append(word);
+            }
+            // Print any remaining text in currentLine
+            if (currentLine.Length > 0)
+            {
+                MainWindowTextRegular(currentLine.ToString(), maxWidth, ref startingRow);
+            }
         }
 
         // All the Commands in our CommandWindow()
         public static void Commands(int commandWindowHeight, int commandWindowWidth, int mainWindowWidth, ref int commandRow)
         {
-            // Call CommandWindowText for each command
-            int commandWindowXPosition = mainWindowWidth + 1; // Adjust this as needed
+            int commandWindowXPosition = mainWindowWidth + 1; // Adjust
             CommandWindowText("Command 1: Start Game", commandWindowXPosition, ref commandRow);
             CommandWindowText("Command 2: Load Game", commandWindowXPosition, ref commandRow);
             CommandWindowText("Command 3: Settings", commandWindowXPosition, ref commandRow);
@@ -185,7 +220,7 @@ namespace Aeon.classes
         // ================================================================================== Text Functions
 
         // Center Console Text ------------
-        static void CenteredConsoleText(string text, int width, ref int row)
+        static void MainWindowTextRegular(string text, int width, ref int row)
         {
             Console.OutputEncoding = Encoding.UTF8;
             int maxWidth = width - 2;
@@ -193,11 +228,10 @@ namespace Aeon.classes
             // Truncate text if too long
             if (text.Length > maxWidth) { text = text.Substring(0, maxWidth); }
 
-            // Calculate, center text
-            int leftPadding = (width - text.Length) / 2;
-
-            // Ensure within bounds
-            if (leftPadding < 0) leftPadding = 0;
+            // Calculate, center text //int leftPadding = (width - text.Length) / 2;
+            
+            int leftPadding = 3;
+            if (leftPadding < 0) leftPadding = 0; // Ensure within bounds
 
             // Check if current row within area
             if (row > 0 && row < Console.WindowHeight - 1)
@@ -208,7 +242,6 @@ namespace Aeon.classes
             }
         }
 
-        // Command Window Text ------------
         // Command Window Text ------------
         public static void CommandWindowText(string text, int commandWindowXPosition, ref int row)
         {
