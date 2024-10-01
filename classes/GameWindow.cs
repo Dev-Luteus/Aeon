@@ -7,6 +7,7 @@ namespace Aeon.classes
         public void Main()
         {
             // ---------------- Main Section ----------------
+            // Dimensions
             Console.OutputEncoding = Encoding.UTF8;
             int mainWindowWidth = 120;
             int mainWindowHeight = 20;
@@ -14,31 +15,57 @@ namespace Aeon.classes
             int commandWindowWidth = 28;
             int hudHeight = 2;
             int inputHeight = 2;
-            
-            int playerCursorPositionX = 5;    // Makes sense
+
+            // Positions
+            int playerCursorPositionX = 5;
             int playerCursorPositionY = mainWindowHeight + hudHeight; // Set cursor below game window and HUD
-            
-            MainWindow(mainWindowHeight, mainWindowWidth); 
+
+            // Text
+            int startingRow = 1; // Print consoleText below top border
+            int commandRow = 1; // Starting row for command window text
+
+            // Functions
+            MainWindow(mainWindowHeight, mainWindowWidth);
             PlayerHUD(mainWindowHeight, mainWindowWidth, hudHeight);  // Below Main
             UserInputWindow(mainWindowHeight + hudHeight, mainWindowWidth, inputHeight); // Below HUD
             CommandWindow(commandWindowHeight, commandWindowWidth);
-            
+
             // ---------------- Text Section ----------------
-            int startingRow = 1;        // Print consoleText below top border
-            
+
+            // ======= Main Window Text Function
+            MainWindowDialogue(mainWindowHeight, mainWindowWidth, ref startingRow);
+
+            // ======= Command Window Text Function
+            Commands(commandWindowHeight, commandWindowWidth, mainWindowWidth, ref commandRow);
+
+            // Set playerCursor inside userInput window
+            Console.SetCursorPosition(playerCursorPositionX, playerCursorPositionY);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            string userInput = ReadLimitedInput(30); // Limit : 30 char
+        }
+
+        // All the Dialogue messages ( to make Main() more readable )
+        public static void MainWindowDialogue(int mainWindowHeight, int mainWindowWidth, ref int startingRow)
+        {
             CenteredConsoleText("This is a test of the console window system", mainWindowWidth, ref startingRow);
             CenteredConsoleText("Another test line", mainWindowWidth, ref startingRow);
             CenteredConsoleText("A shorter line", mainWindowWidth, ref startingRow);
             CenteredConsoleText("Yet another line to test", mainWindowWidth, ref startingRow);
             CenteredConsoleText("Yet another line to test test test test test test test test test test", mainWindowWidth, ref startingRow);
-            
-            // Set playerCursor inside userInput window
-            Console.SetCursorPosition(playerCursorPositionX, playerCursorPositionY);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            string userInput = ReadLimitedInput(20); // Limit : 20 char
         }
-        
+
+        // All the Commands in our CommandWindow()
+        public static void Commands(int commandWindowHeight, int commandWindowWidth, int mainWindowWidth, ref int commandRow)
+        {
+            // Call CommandWindowText for each command
+            int commandWindowXPosition = mainWindowWidth + 1; // Adjust this as needed
+            CommandWindowText("Command 1: Start Game", commandWindowXPosition, ref commandRow);
+            CommandWindowText("Command 2: Load Game", commandWindowXPosition, ref commandRow);
+            CommandWindowText("Command 3: Settings", commandWindowXPosition, ref commandRow);
+            CommandWindowText("Command 4: Exit", commandWindowXPosition, ref commandRow);
+        }
+
         /* I want to limit the amount of characters a user can type, BEFORE a message is sent.
          * This is to ensure that the User does not exceed the UserInputWindow, and doesn't overwrite its borders.
          * Since a String is actually an array of characters, a string builder can limit the size of that array.*/
@@ -97,7 +124,6 @@ namespace Aeon.classes
             {
                 Console.SetCursorPosition(0, startY + i);
                 Console.Write("│");
-                
                 //Console.Write(playerHealth) etc?
                 Console.SetCursorPosition(width - 1, startY + i);
                 Console.Write("│");
@@ -133,7 +159,7 @@ namespace Aeon.classes
         {
             Console.OutputEncoding = Encoding.UTF8;
             int commandWindowXPosition = 121; // Set X position for command window
-            
+
             // Top Border
             Console.SetCursorPosition(commandWindowXPosition, 0); // Set cursor position for command window
             Console.Write("◼");
@@ -155,10 +181,13 @@ namespace Aeon.classes
             Console.Write(new string('─', width - 2));
             Console.Write("◼");
         }
-        
+
+        // ================================================================================== Text Functions
+
         // Center Console Text ------------
         static void CenteredConsoleText(string text, int width, ref int row)
         {
+            Console.OutputEncoding = Encoding.UTF8;
             int maxWidth = width - 2;
 
             // Truncate text if too long
@@ -177,6 +206,22 @@ namespace Aeon.classes
                 Console.Write(text);
                 row++;  // New line
             }
+        }
+
+        // Command Window Text ------------
+        // Command Window Text ------------
+        public static void CommandWindowText(string text, int commandWindowXPosition, ref int row)
+        {
+            Console.OutputEncoding = Encoding.UTF8;
+            int maxWidth = 28 - 7;  // 28 == Window width  :  7 == '│ ➤ ' + border
+
+            // Truncate if too long
+            if (text.Length > maxWidth) { text = text.Substring(0, maxWidth); }
+
+            // Set cursor position to start after the arrow (5 spaces)
+            Console.SetCursorPosition(commandWindowXPosition + 5, row);
+            Console.Write(text); // Display
+            row++;
         }
     }
 }
