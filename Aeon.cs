@@ -5,11 +5,11 @@ namespace Aeon {
     class Program
     {
         public static Player playerChar = new Player();
-        public static CharacterCreation playerCharCreation = new CharacterCreation(); // Changed to instance call
+        public static GameWindow mainWindow = new GameWindow();
         static void Main()
         {
             //Start();
-            playerCharCreation.Main();
+            mainWindow.Main();
         }
         static void Start()
         {

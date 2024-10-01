@@ -2,10 +2,8 @@
 
 namespace Aeon.classes
 {
-    public class CharacterCreation
+    public class GameWindow
     {
-        public static Player playerChar = new Player();
-
         public void Main()
         {
             // ---------------- Main Section ----------------
@@ -13,14 +11,14 @@ namespace Aeon.classes
             int mainWindowWidth = 120;
             int mainWindowHeight = 20;
             int commandWindowHeight = 20;
-            int commandWindowWidth = 24;
+            int commandWindowWidth = 28;
             
             int cursorPositionX = 5;    // Makes sense
             int cursorPositionY = mainWindowHeight;    // Is completely incomprehensible. Why? Wtf, help
             
-            CreationWindow(mainWindowHeight, mainWindowWidth); 
+            MainWindow(mainWindowHeight, mainWindowWidth); 
             UserInputWindow(mainWindowHeight, mainWindowWidth);
-            CreationCommandWindow(commandWindowHeight, commandWindowWidth);
+            CommandWindow(commandWindowHeight, commandWindowWidth);
             
             // ---------------- Text Section ----------------
             int startingRow = 1;        // Print consoleText below top border
@@ -32,10 +30,12 @@ namespace Aeon.classes
             CenteredConsoleText("Yet another line to test test test test test test test test test test", mainWindowWidth, ref startingRow);
             
             Console.SetCursorPosition(cursorPositionX, cursorPositionY); // Set cursor below game window
+
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.ReadLine(); // Prevent window from closing
         }
         // Main Window ------------
-        static void CreationWindow(int height, int width)
+        static void MainWindow(int height, int width)
         {
             Console.OutputEncoding = Encoding.UTF8;
             // Top Border
@@ -64,7 +64,7 @@ namespace Aeon.classes
         {
             Console.OutputEncoding = Encoding.UTF8;
             int inputHeight = 2; 
-
+            
             // Left, right
             for (int i = 0; i < inputHeight; i++)
             {
@@ -80,10 +80,9 @@ namespace Aeon.classes
             Console.Write(new string('─', width - 2));
             Console.Write("◼");
         }
-        // Clamp to - Input Window ------------
 
         // Command List Window ------------
-        static void CreationCommandWindow(int height, int width)
+        static void CommandWindow(int height, int width)
         {
             Console.OutputEncoding = Encoding.UTF8;
             int commandWindowXPosition = 121; // Set X position for command window
@@ -98,7 +97,7 @@ namespace Aeon.classes
             for (int i = 1; i < height - 1; i++)
             {
                 Console.SetCursorPosition(commandWindowXPosition, i);
-                Console.Write("│");
+                Console.Write("│ ─");
                 Console.SetCursorPosition(commandWindowXPosition + width - 1, i);
                 Console.Write("│");
             }
