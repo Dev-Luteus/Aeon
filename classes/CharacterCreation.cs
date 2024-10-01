@@ -8,25 +8,22 @@ namespace Aeon.classes
 
         public void Main()
         {
+            // ---------------- Main Section ----------------
             Console.OutputEncoding = Encoding.UTF8;
-            int mainWindowWidth = 110;
+            int mainWindowWidth = 120;
             int mainWindowHeight = 20;
             int commandWindowHeight = 20;
-            int commandWindowWidth = 30;
-            int totalWindowWidth = mainWindowWidth + commandWindowWidth + 5;
-            int totalWindowHeight = mainWindowHeight + commandWindowHeight + 5;
-
-            int startingRow = 1; // Print below top border
-            int cursorPositionX = 5; // Makes sense
-            int cursorPositionY = 3; // Is completely incomprehensible. Why? Wtf, help
-            int commandWindowXPosition = mainWindowWidth + 5; // X position for command window
-
-            Console.SetWindowSize(totalWindowWidth, totalWindowHeight);
-            Console.SetBufferSize(totalWindowWidth, totalWindowHeight);
+            int commandWindowWidth = 24;
+            
+            int cursorPositionX = 5;    // Makes sense
+            int cursorPositionY = mainWindowHeight;    // Is completely incomprehensible. Why? Wtf, help
             
             CreationWindow(mainWindowHeight, mainWindowWidth); 
             UserInputWindow(mainWindowHeight, mainWindowWidth);
             CreationCommandWindow(commandWindowHeight, commandWindowWidth);
+            
+            // ---------------- Text Section ----------------
+            int startingRow = 1;        // Print consoleText below top border
             
             CenteredConsoleText("This is a test of the console window system", mainWindowWidth, ref startingRow);
             CenteredConsoleText("Another test line", mainWindowWidth, ref startingRow);
@@ -89,7 +86,7 @@ namespace Aeon.classes
         static void CreationCommandWindow(int height, int width)
         {
             Console.OutputEncoding = Encoding.UTF8;
-            int commandWindowXPosition = 111; // Set X position for command window
+            int commandWindowXPosition = 121; // Set X position for command window
             
             // Top Border
             Console.SetCursorPosition(commandWindowXPosition, 0); // Set cursor position for command window
