@@ -12,12 +12,15 @@ namespace Aeon.classes
             int mainWindowHeight = 20;
             int commandWindowHeight = 20;
             int commandWindowWidth = 28;
+            int hudHeight = 2;
+            int inputHeight = 2;
             
-            int cursorPositionX = 5;    // Makes sense
-            int cursorPositionY = mainWindowHeight;    // Is completely incomprehensible. Why? Wtf, help
+            int playerCursorPositionX = 5;    // Makes sense
+            int playerCursorPositionY = mainWindowHeight + hudHeight; // Set cursor below game window and HUD
             
             MainWindow(mainWindowHeight, mainWindowWidth); 
-            UserInputWindow(mainWindowHeight, mainWindowWidth);
+            PlayerHUD(mainWindowHeight, mainWindowWidth, hudHeight);  // Below Main
+            UserInputWindow(mainWindowHeight + hudHeight, mainWindowWidth, inputHeight); // Below HUD
             CommandWindow(commandWindowHeight, commandWindowWidth);
             
             // ---------------- Text Section ----------------
@@ -29,11 +32,39 @@ namespace Aeon.classes
             CenteredConsoleText("Yet another line to test", mainWindowWidth, ref startingRow);
             CenteredConsoleText("Yet another line to test test test test test test test test test test", mainWindowWidth, ref startingRow);
             
-            Console.SetCursorPosition(cursorPositionX, cursorPositionY); // Set cursor below game window
+            // Set playerCursor inside userInput window
+            Console.SetCursorPosition(playerCursorPositionX, playerCursorPositionY);
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.ReadLine(); // Prevent window from closing
+            string userInput = ReadLimitedInput(20); // Limit : 20 char
         }
+        
+        /* I want to limit the amount of characters a user can type, BEFORE a message is sent.
+         * This is to ensure that the User does not exceed the UserInputWindow, and doesn't overwrite its borders.
+         * Since a String is actually an array of characters, a string builder can limit the size of that array.*/
+        public static string ReadLimitedInput(int maxChars)
+        {
+            StringBuilder input = new StringBuilder();
+            while (true)
+            {
+                ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true); // Intercept: Read but don't display
+                if (keyInfo.Key == ConsoleKey.Enter) {                     // Enter = command sent
+                    break;
+                }
+                else if (keyInfo.Key == ConsoleKey.Backspace && input.Length > 0) // Handle backspace
+                {
+                    input.Remove(input.Length - 1, 1);
+                    Console.Write("\b \b"); // Remove character from console
+                }
+                else if (input.Length < maxChars && !char.IsControl(keyInfo.KeyChar)) // Limit characters and ignore control characters
+                {
+                    input.Append(keyInfo.KeyChar);
+                    Console.Write(keyInfo.KeyChar); // Echo character to console
+                }
+            }
+            return input.ToString();
+        }
+
         // Main Window ------------
         static void MainWindow(int height, int width)
         {
@@ -59,23 +90,39 @@ namespace Aeon.classes
             Console.Write(new string('─', width - 2));
             Console.Write("◼");
         }
-        // Input Window ------------
-        static void UserInputWindow(int height, int width)
+
+        static void PlayerHUD(int startY, int width, int hudHeight)
         {
-            Console.OutputEncoding = Encoding.UTF8;
-            int inputHeight = 2; 
-            
-            // Left, right
+            for (int i = 0; i < hudHeight; i++)
+            {
+                Console.SetCursorPosition(0, startY + i);
+                Console.Write("│");
+                
+                //Console.Write(playerHealth) etc?
+                Console.SetCursorPosition(width - 1, startY + i);
+                Console.Write("│");
+            }
+
+            // Bottom Border of PlayerHUD
+            Console.SetCursorPosition(0, startY + hudHeight - 1);
+            Console.Write("◼");
+            Console.Write(new string('─', width - 2));
+            Console.Write("◼");
+        }
+
+        // Input Window ------------
+        static void UserInputWindow(int startY, int width, int inputHeight)
+        {
             for (int i = 0; i < inputHeight; i++)
             {
-                Console.SetCursorPosition(0, height + i);
+                Console.SetCursorPosition(0, startY + i);
                 Console.Write("│ {:");
-                Console.SetCursorPosition(width - 4, height + i);
+                Console.SetCursorPosition(width - 4, startY + i);
                 Console.Write(":} │");
             }
 
             // Bottom Border
-            Console.SetCursorPosition(0, height + inputHeight - 1);
+            Console.SetCursorPosition(0, startY + inputHeight - 1);
             Console.Write("◼");
             Console.Write(new string('─', width - 2));
             Console.Write("◼");
@@ -97,7 +144,7 @@ namespace Aeon.classes
             for (int i = 1; i < height - 1; i++)
             {
                 Console.SetCursorPosition(commandWindowXPosition, i);
-                Console.Write("│ ─");
+                Console.Write("│ ➤ ");
                 Console.SetCursorPosition(commandWindowXPosition + width - 1, i);
                 Console.Write("│");
             }
@@ -108,6 +155,7 @@ namespace Aeon.classes
             Console.Write(new string('─', width - 2));
             Console.Write("◼");
         }
+        
         // Center Console Text ------------
         static void CenteredConsoleText(string text, int width, ref int row)
         {
