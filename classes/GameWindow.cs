@@ -4,48 +4,53 @@ namespace Aeon.classes
 {
     public class GameWindow
     {
-        private int lastWindowWidth;
-        private int lastWindowHeight;
+        static int mainWindowWidth = 120; 
+        static int mainWindowHeight = 24;
+        static int commandWindowHeight = 16; 
+        static int commandWindowWidth = 28;
+        static int hudHeight = 2;
+        static int inputHeight = 2;
 
+        static int totalWidth = mainWindowWidth + commandWindowWidth;
+        static int totalHeight = mainWindowHeight + hudHeight + inputHeight;
+        
+        static int originalWindowWidth = Console.LargestWindowWidth;
+        static int originalWindowHeight = totalHeight;
+        
+        static string userInput;
         public void Main()
         {
-            // ---------------- Main Section ----------------
-            // Dimensions
-            Console.OutputEncoding = Encoding.UTF8;
-            int mainWindowWidth = 120;
-            int mainWindowHeight = 24;
-            int commandWindowHeight = 16;
-            int commandWindowWidth = 28;
-            int hudHeight = 2;
-            int inputHeight = 2;
+            while (true) {
+                // ---------------- Main Section ----------------
+                // Dimensions
+                Console.OutputEncoding = Encoding.UTF8;
+                Console.SetWindowSize(Console.LargestWindowWidth, totalHeight);
 
-            int totalWidth = mainWindowWidth + commandWindowWidth;
-            int totalHeight = mainWindowHeight + hudHeight + inputHeight;
-
-            Console.SetWindowSize(Console.LargestWindowWidth, totalHeight);
-
-            // DRAW UI
-            DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight, commandWindowWidth, hudHeight, inputHeight);
-            
-            // RESIZING
-            while (true)
-            {
-                if (Console.WindowHeight != lastWindowHeight || Console.WindowWidth != lastWindowWidth)
+                // DRAW UI
+                DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight, commandWindowWidth, hudHeight, inputHeight);
+                
+                // RESIZING
+                while (true)
                 {
-                    lastWindowWidth = Console.WindowWidth;
-                    lastWindowHeight = Console.WindowHeight;
-                    
-                    // If user redraws to original size: 
-                    if (Console.WindowHeight >= totalHeight && Console.WindowWidth >= totalWidth)
-                    {
-                        DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight, commandWindowWidth, hudHeight, inputHeight);
+                    if (Console.WindowHeight != originalWindowHeight || Console.WindowWidth != originalWindowWidth) {
+                        Console.Clear();
+                        Console.WriteLine("\x1b[3J"); //won't clear fully otherwise
+                        
+                        // If user redraws to original size: 
+                        if (Console.WindowHeight >= totalHeight && Console.WindowWidth >= totalWidth)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("\x1b[3J");
+                            DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight, commandWindowWidth, hudHeight, inputHeight);
+                            break;
+                        }
                     }
+                    // Reduce CPU usage with a delay
+                    Thread.Sleep(100);
                 }
-                // I had help with this part
-                // Your input handling can go here, or you can just put a small delay to reduce CPU usage
-                Thread.Sleep(100); // Sleep for 100ms to avoid busy waiting
             }
         }
+
         private void DrawUI(int mainWindowHeight, int mainWindowWidth, int commandWindowHeight, int commandWindowWidth,
                       int hudHeight, int inputHeight)
         {
@@ -133,6 +138,9 @@ namespace Aeon.classes
             StringBuilder input = new StringBuilder();
             while (true)
             {
+                if (Console.WindowHeight != originalWindowHeight || Console.WindowWidth != originalWindowWidth) {
+                    break;
+                }
                 ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true); // Intercept: Read but don't display
                 if (keyInfo.Key == ConsoleKey.Enter) {                     // Enter = command sent
                     break;
