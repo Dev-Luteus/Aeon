@@ -4,47 +4,71 @@ namespace Aeon.classes
 {
     public class GameWindow
     {
+        private int lastWindowWidth;
+        private int lastWindowHeight;
+
         public void Main()
         {
             // ---------------- Main Section ----------------
             // Dimensions
             Console.OutputEncoding = Encoding.UTF8;
             int mainWindowWidth = 120;
-            int mainWindowHeight = 20;
-            int commandWindowHeight = 20;
+            int mainWindowHeight = 24;
+            int commandWindowHeight = 16;
             int commandWindowWidth = 28;
             int hudHeight = 2;
             int inputHeight = 2;
 
-            // Positions
-            int playerCursorPositionX = 5;
-            int playerCursorPositionY = mainWindowHeight + hudHeight; // Set cursor below game window and HUD
+            int totalWidth = mainWindowWidth + commandWindowWidth;
+            int totalHeight = mainWindowHeight + hudHeight + inputHeight;
 
-            // Text
-            int startingRow = 1; // Print consoleText below top border
-            int commandRow = 1; // Starting row for command window text
+            Console.SetWindowSize(Console.LargestWindowWidth, totalHeight);
 
+            // DRAW UI
+            DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight, commandWindowWidth, hudHeight, inputHeight);
+            
+            // RESIZING
+            while (true)
+            {
+                if (Console.WindowHeight != lastWindowHeight || Console.WindowWidth != lastWindowWidth)
+                {
+                    lastWindowWidth = Console.WindowWidth;
+                    lastWindowHeight = Console.WindowHeight;
+                    
+                    // If user redraws to original size: 
+                    if (Console.WindowHeight >= totalHeight && Console.WindowWidth >= totalWidth)
+                    {
+                        DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight, commandWindowWidth, hudHeight, inputHeight);
+                    }
+                }
+                // I had help with this part
+                // Your input handling can go here, or you can just put a small delay to reduce CPU usage
+                Thread.Sleep(100); // Sleep for 100ms to avoid busy waiting
+            }
+        }
+        private void DrawUI(int mainWindowHeight, int mainWindowWidth, int commandWindowHeight, int commandWindowWidth,
+                      int hudHeight, int inputHeight)
+        {
+            Console.Clear(); // Clear old UI
+            
             // Functions
             MainWindow(mainWindowHeight, mainWindowWidth);
             PlayerHUD(mainWindowHeight, mainWindowWidth, hudHeight);  // Below Main
             UserInputWindow(mainWindowHeight + hudHeight, mainWindowWidth, inputHeight); // Below HUD
             CommandWindow(commandWindowHeight, commandWindowWidth);
 
-            // ---------------- Text Section ----------------
-
-            // ======= Main Window Text Function
+            // Initialize variables for MainWindowDialogue and Commands
+            int startingRow = 1;
+            int commandRow = 1; 
+            
             MainWindowDialogue(mainWindowHeight, mainWindowWidth, ref startingRow);
-
-            // ======= Command Window Text Function
             Commands(commandWindowHeight, commandWindowWidth, mainWindowWidth, ref commandRow);
-
-            // Set playerCursor inside userInput window
+            
+            int playerCursorPositionX = 5; 
+            int playerCursorPositionY = mainWindowHeight + hudHeight; 
             Console.SetCursorPosition(playerCursorPositionX, playerCursorPositionY);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            string userInput = ReadLimitedInput(30); // Limit : 30 char
         }
-
+        
         // Main Window Story Text Function ------------
         public static void MainWindowDialogue(int mainWindowHeight, int mainWindowWidth, ref int startingRow)
         {
@@ -130,9 +154,10 @@ namespace Aeon.classes
         // Main Window ------------
         static void MainWindow(int height, int width)
         {
-            Console.OutputEncoding = Encoding.UTF8;
-            // Top Border
             Console.SetCursorPosition(0, 0);
+            Console.OutputEncoding = Encoding.UTF8;
+            
+            // Top Border
             Console.Write("◼");
             Console.Write(new string('─', width - 2));
             Console.Write("◼");
@@ -217,8 +242,7 @@ namespace Aeon.classes
             Console.Write("◼");
         }
 
-        // ================================================================================== Text Functions
-
+        // Display Text Function ------------
         // Center Console Text ------------
         static void MainWindowTextRegular(string text, int width, ref int row)
         {
