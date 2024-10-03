@@ -16,10 +16,10 @@ namespace Aeon.classes {
         static int inputWindowStartX = 5;        static int inputWindowStartY;
         
         // Input/Redraw logic variables
-        static string userInput = string.Empty;
-        static bool isCorrectSize = false;
-        static bool isTyping = false;
-        static bool needsRedraw = false;
+        static string userInput       = string.Empty;
+        static bool   isCorrectSize   = false;
+        static bool   isTyping        = false;
+        static bool   needsRedraw     = false;
 
         public void Main() {   
             Console.OutputEncoding = Encoding.UTF8;
