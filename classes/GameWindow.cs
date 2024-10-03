@@ -2,19 +2,20 @@
 
 namespace Aeon.classes {
     public class GameWindow {
-        static int mainWindowWidth = 120; 
-        static int mainWindowHeight = 24;
-        static int commandWindowHeight = 16; 
-        static int commandWindowWidth = 28;
-        static int hudHeight = 2;
-        static int inputHeight = 2;
+        // Dimensions
+        static int mainWindowWidth = 120;        static int mainWindowHeight = 24;
+        static int commandWindowHeight = 16;     static int commandWindowWidth = 28;
+        static int hudHeight = 2;                static int inputHeight = 2;
         
-        static int totalWidth = mainWindowWidth + commandWindowWidth;
-        static int totalHeight = mainWindowHeight + hudHeight + inputHeight;
+        static int totalWidth                    = mainWindowWidth + commandWindowWidth;
+        static int totalHeight                   = mainWindowHeight + hudHeight + inputHeight;
+        static int originalWindowWidth           = Console.LargestWindowWidth;
+        static int originalWindowHeight          = totalHeight;
         
-        static int originalWindowWidth = Console.LargestWindowWidth;
-        static int originalWindowHeight = totalHeight;
+        // Cursor position (user)
+        static int inputWindowStartX = 5;         static int inputWindowStartY;
         
+        // Input/Redraw logic variables
         static string userInput = string.Empty;
         static bool isCorrectSize = false;
         static bool isTyping = false;
@@ -32,7 +33,7 @@ namespace Aeon.classes {
             Task inputTask = null;
             
             while (true) // Resizing + Input Handling
-            {
+            {                                                          // not
                 if (Console.WindowHeight != originalWindowHeight || Console.WindowWidth != originalWindowWidth) {
                     
                     bool wasCorrectSize = isCorrectSize;
@@ -60,7 +61,8 @@ namespace Aeon.classes {
                         userInput = ReadLimitedInput(30);
                         isTyping = false;                              // Not infinite input
                         
-                        // Process userInput 
+                        // Process userInput                           :: In User Input Window
+                        Console.SetCursorPosition(inputWindowStartX, inputWindowStartY); 
                     });
                 }
 
@@ -83,15 +85,22 @@ namespace Aeon.classes {
         public static string ReadLimitedInput(int maxChars)
         {
             StringBuilder input = new StringBuilder();
+            Console.SetCursorPosition(inputWindowStartX, inputWindowStartY);
+            
             while (isTyping && isCorrectSize)
             {
                 if (Console.KeyAvailable)
                 {
                     ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
-                    if (keyInfo.Key == ConsoleKey.Enter)
+                    if (keyInfo.Key == ConsoleKey.Enter)                        // Press Enter : Main --> { 1 }
                     {
-                        Console.WriteLine(); // Move to next line after Enter
-                        break;
+                        // Process input       : (e.g., add to a list of messages)
+                        // For now             : clear input
+                        for (int i = 0; i < input.Length; i++) { Console.Write("\b \b"); }
+                        
+                        string result = input.ToString();
+                        input.Clear();
+                        return result;
                     }
                     else if (keyInfo.Key == ConsoleKey.Backspace && input.Length > 0)
                     {
@@ -130,9 +139,12 @@ namespace Aeon.classes {
             MainWindowDialogue(mainWindowHeight, mainWindowWidth, ref startingRow);
             Commands(commandWindowHeight, commandWindowWidth, mainWindowWidth, ref commandRow);
             
-            int playerCursorPositionX = 5; 
-            int playerCursorPositionY = mainWindowHeight + hudHeight; 
-            Console.SetCursorPosition(playerCursorPositionX, playerCursorPositionY);
+            // int playerCursorPositionX = 5; 
+            // int playerCursorPositionY = mainWindowHeight + hudHeight; 
+            // Console.SetCursorPosition(playerCursorPositionX, playerCursorPositionY);
+            
+            inputWindowStartY = mainWindowHeight + hudHeight;
+            Console.SetCursorPosition(inputWindowStartX, inputWindowStartY);
         }
         
         // Main Window Story Text Function ------------
