@@ -19,42 +19,31 @@ namespace Aeon.classes
         
         static string userInput;
         public void Main()
-        {
+        {   // Initialize
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.SetWindowSize(Console.LargestWindowWidth, totalHeight);
+            DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight,
+                   commandWindowWidth, hudHeight, inputHeight);
+            
+            // RESIZING
             while (true) {
-                // ---------------- Main Section ----------------
-                // Dimensions
-                Console.OutputEncoding = Encoding.UTF8;
-                Console.SetWindowSize(Console.LargestWindowWidth, totalHeight);
-
-                // DRAW UI
-                DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight, commandWindowWidth, hudHeight, inputHeight);
-                
-                // RESIZING
-                while (true)
-                {
-                    if (Console.WindowHeight != originalWindowHeight || Console.WindowWidth != originalWindowWidth) {
-                        Console.Clear();
-                        Console.WriteLine("\x1b[3J"); //won't clear fully otherwise
-                        
-                        // If user redraws to original size: 
-                        if (Console.WindowHeight >= totalHeight && Console.WindowWidth >= totalWidth)
-                        {
-                            Console.Clear();
-                            Console.WriteLine("\x1b[3J");
-                            DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight, commandWindowWidth, hudHeight, inputHeight);
-                            break;
-                        }
+                if (Console.WindowHeight != originalWindowHeight || Console.WindowWidth != originalWindowWidth) {
+                    Console.Clear(); Console.WriteLine("\x1b[3J"); //won't clear fully otherwise
+                    
+                    // If user redraws to original size: 
+                    if (Console.WindowHeight >= totalHeight && Console.WindowWidth >= totalWidth) 
+                    {
+                        DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight, commandWindowWidth, hudHeight, inputHeight);
                     }
-                    // Reduce CPU usage with a delay
-                    Thread.Sleep(100);
                 }
+                Thread.Sleep(100); // Reduce CPU usage with a delay
             }
         }
 
         private void DrawUI(int mainWindowHeight, int mainWindowWidth, int commandWindowHeight, int commandWindowWidth,
-                      int hudHeight, int inputHeight)
-        {
-            Console.Clear(); // Clear old UI
+                      int hudHeight, int inputHeight) {
+            
+            Console.Clear(); Console.WriteLine("\x1b[3J"); // Clear old UI (x1b clears whole)
             
             // Functions
             MainWindow(mainWindowHeight, mainWindowWidth);
@@ -77,7 +66,6 @@ namespace Aeon.classes
         // Main Window Story Text Function ------------
         public static void MainWindowDialogue(int mainWindowHeight, int mainWindowWidth, ref int startingRow)
         {
-            // Define the story string
             string story = "This is a test of the console window system. " +
                            "Another test line. A shorter line. Yet another line to test. " +
                            "Yet another line to test test test test test test test test test test. " +
@@ -93,8 +81,8 @@ namespace Aeon.classes
         // Main Window Story Text Manager Function ------------
         public static void MainWindowDialogueManager(string story, int maxWidth, ref int startingRow)
         {
-            int maxLineWidth = maxWidth - 4; // Adjust
-            string[] words = story.Split(' '); // Split story into words
+            int maxLineWidth = maxWidth - 4;
+            string[] words = story.Split(' '); // Split into words
             StringBuilder currentLine = new StringBuilder();
 
             foreach (var word in words)
@@ -105,16 +93,13 @@ namespace Aeon.classes
                     MainWindowTextRegular(currentLine.ToString(), maxWidth, ref startingRow);
                     currentLine.Clear();
                 }
-                
-                // Append the word to the current line
                 if (currentLine.Length > 0)
                 {
                     currentLine.Append(" "); // Space before word, if not first word
-                }
-                currentLine.Append(word);
-            }
-            // Print any remaining text in currentLine
-            if (currentLine.Length > 0)
+                } 
+                currentLine.Append(word);    // Append word to current line
+            } 
+            if (currentLine.Length > 0)      // Print remaining in currentLine
             {
                 MainWindowTextRegular(currentLine.ToString(), maxWidth, ref startingRow);
             }
@@ -138,9 +123,6 @@ namespace Aeon.classes
             StringBuilder input = new StringBuilder();
             while (true)
             {
-                if (Console.WindowHeight != originalWindowHeight || Console.WindowWidth != originalWindowWidth) {
-                    break;
-                }
                 ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true); // Intercept: Read but don't display
                 if (keyInfo.Key == ConsoleKey.Enter) {                     // Enter = command sent
                     break;
@@ -171,8 +153,7 @@ namespace Aeon.classes
             Console.Write("◼");
 
             // Left and Right Borders
-            for (int i = 1; i < height - 1; i++)
-            {
+            for (int i = 1; i < height - 1; i++) {
                 Console.SetCursorPosition(0, i);
                 Console.Write("│");
                 Console.SetCursorPosition(width - 1, i);
@@ -256,7 +237,7 @@ namespace Aeon.classes
         {
             Console.OutputEncoding = Encoding.UTF8;
             int maxWidth = width - 2;
-
+            
             // Truncate text if too long
             if (text.Length > maxWidth) { text = text.Substring(0, maxWidth); }
 
@@ -282,11 +263,10 @@ namespace Aeon.classes
 
             // Truncate if too long
             if (text.Length > maxWidth) { text = text.Substring(0, maxWidth); }
-
-            // Set cursor position to start after the arrow (5 spaces)
-            Console.SetCursorPosition(commandWindowXPosition + 5, row);
+            
+            Console.SetCursorPosition(commandWindowXPosition + 5, row); // Start after arrow (5 spaces)
             Console.Write(text); // Display
-            row++;
+            row++;               // New line
         }
     }
 }
