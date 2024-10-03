@@ -11,10 +11,9 @@ namespace Aeon.classes
         public void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
-            MainMenuText();  // Display the Main Menu text first
+            MainMenuText();
             LoadingSymbolText();
         }
-
         static void MainMenuText()
         {
             string mainMenuText = @$"
@@ -115,7 +114,6 @@ x          x
                     Thread.Sleep(delay);
                 }
             }
-
             stopwatch.Stop(); Console.WriteLine();
             ClearLoadingArea(frames[0].Split('\n').Length); // Clear the loading symbol after finishing
         }
