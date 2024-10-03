@@ -1,45 +1,117 @@
 ﻿using System.Text;
 
-namespace Aeon.classes
-{
-    public class GameWindow
-    {
+namespace Aeon.classes {
+    public class GameWindow {
         static int mainWindowWidth = 120; 
         static int mainWindowHeight = 24;
         static int commandWindowHeight = 16; 
         static int commandWindowWidth = 28;
         static int hudHeight = 2;
         static int inputHeight = 2;
-
+        
         static int totalWidth = mainWindowWidth + commandWindowWidth;
         static int totalHeight = mainWindowHeight + hudHeight + inputHeight;
         
         static int originalWindowWidth = Console.LargestWindowWidth;
         static int originalWindowHeight = totalHeight;
         
-        static string userInput;
-        public void Main()
-        {   // Initialize
+        static string userInput = string.Empty;
+        static bool isCorrectSize = false;
+        static bool isTyping = false;
+        static bool needsRedraw = false;
+
+        public void Main() {   
             Console.OutputEncoding = Encoding.UTF8;
-            Console.SetWindowSize(Console.LargestWindowWidth, totalHeight);
+            Console.SetWindowSize(Console.LargestWindowWidth, totalHeight); // Initialize
             DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight,
                    commandWindowWidth, hudHeight, inputHeight);
             
-            // RESIZING
-            while (true) {
+            CheckWindowSize();
+
+            // Task : asynchronous operation. Run code in parallel with main program.
+            Task inputTask = null;
+            
+            while (true) // Resizing + Input Handling
+            {
                 if (Console.WindowHeight != originalWindowHeight || Console.WindowWidth != originalWindowWidth) {
-                    Console.Clear(); Console.WriteLine("\x1b[3J"); //won't clear fully otherwise
                     
-                    // If user redraws to original size: 
-                    if (Console.WindowHeight >= totalHeight && Console.WindowWidth >= totalWidth) 
-                    {
-                        DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight, commandWindowWidth, hudHeight, inputHeight);
-                    }
+                    bool wasCorrectSize = isCorrectSize;
+                    CheckWindowSize();
+                    
+                    if (!isCorrectSize) {                              // If not
+                        isTyping = false;
+                        userInput = string.Empty;
+                        
+                        Console.Clear(); Console.WriteLine("\x1b[3J"); // Won't clear fully otherwise
+                    } 
+                    else if (!wasCorrectSize) { needsRedraw = true; }  // if not correct size
                 }
+                                                                       // if not correct size
+                if (needsRedraw) {
+                    
+                    DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight, commandWindowWidth, hudHeight, inputHeight);
+                    needsRedraw = false;                               // False after drawing (otherwise infinite)
+                }
+
+                if (isCorrectSize && inputTask == null) {              // Allow input
+                    inputTask = Task.Run(() => {
+                        
+                        isTyping = true;
+                        userInput = ReadLimitedInput(30);
+                        isTyping = false;                              // Not infinite input
+                        
+                        // Process userInput 
+                    });
+                }
+
+                if (inputTask != null && inputTask.IsCompleted)
+                {
+                    inputTask = null;
+                }
+
                 Thread.Sleep(100); // Reduce CPU usage with a delay
             }
         }
-
+        
+        private void CheckWindowSize() {
+            isCorrectSize = (Console.WindowHeight >= totalHeight && Console.WindowWidth >= totalWidth);
+        }
+        
+        /* I want to limit the amount of characters a user can type, BEFORE a message is sent.
+         * This is to ensure that the User does not exceed the UserInputWindow, and doesn't overwrite its borders.
+         * Since a String is actually an array of characters, a string builder can limit the size of that array.*/
+        public static string ReadLimitedInput(int maxChars)
+        {
+            StringBuilder input = new StringBuilder();
+            while (isTyping && isCorrectSize)
+            {
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
+                    if (keyInfo.Key == ConsoleKey.Enter)
+                    {
+                        Console.WriteLine(); // Move to next line after Enter
+                        break;
+                    }
+                    else if (keyInfo.Key == ConsoleKey.Backspace && input.Length > 0)
+                    {
+                        input.Remove(input.Length - 1, 1);
+                        Console.Write("\b \b");
+                    }
+                    else if (input.Length < maxChars && !char.IsControl(keyInfo.KeyChar))
+                    {
+                        input.Append(keyInfo.KeyChar);
+                        Console.Write(keyInfo.KeyChar);
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(50);
+                }
+            }
+            return input.ToString();
+        }
+        
         private void DrawUI(int mainWindowHeight, int mainWindowWidth, int commandWindowHeight, int commandWindowWidth,
                       int hudHeight, int inputHeight) {
             
@@ -113,32 +185,6 @@ namespace Aeon.classes
             CommandWindowText("Command 2: Load Game", commandWindowXPosition, ref commandRow);
             CommandWindowText("Command 3: Settings", commandWindowXPosition, ref commandRow);
             CommandWindowText("Command 4: Exit", commandWindowXPosition, ref commandRow);
-        }
-
-        /* I want to limit the amount of characters a user can type, BEFORE a message is sent.
-         * This is to ensure that the User does not exceed the UserInputWindow, and doesn't overwrite its borders.
-         * Since a String is actually an array of characters, a string builder can limit the size of that array.*/
-        public static string ReadLimitedInput(int maxChars)
-        {
-            StringBuilder input = new StringBuilder();
-            while (true)
-            {
-                ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true); // Intercept: Read but don't display
-                if (keyInfo.Key == ConsoleKey.Enter) {                     // Enter = command sent
-                    break;
-                }
-                else if (keyInfo.Key == ConsoleKey.Backspace && input.Length > 0) // Handle backspace
-                {
-                    input.Remove(input.Length - 1, 1);
-                    Console.Write("\b \b"); // Remove character from console
-                }
-                else if (input.Length < maxChars && !char.IsControl(keyInfo.KeyChar)) // Limit characters and ignore control characters
-                {
-                    input.Append(keyInfo.KeyChar);
-                    Console.Write(keyInfo.KeyChar); // Echo character to console
-                }
-            }
-            return input.ToString();
         }
 
         // Main Window ------------
