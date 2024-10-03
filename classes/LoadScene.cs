@@ -27,30 +27,21 @@ namespace Aeon.classes
  ▒▒░  ▒▒ ░ ░ ░  ░  ░ ▒ ▒░ ░  ░░   ░ ▒░
   ░   ▒      ░   ░ ░ ░ ▒     ░   ░ ░ 
  ░    ░  ░   ░  ░    ░ ░           ░";
-
-            // Get the console window size
+            
             int windowWidth = Console.WindowWidth;
             int windowHeight = Console.WindowHeight;
 
-            // Split the text into lines to calculate the dimensions
+            // Split to calculate the dimensions
             string[] textLines = mainMenuText.Split('\n');
 
-            // Calculate the number of lines in the text
             int textHeight = textLines.Length;
-
-            // Calculate the longest line to find the width of the text
             int textWidth = textLines.Max(line => line.Length);
 
-            // Calculate the vertical position to center the text
             int verticalPosition = Math.Max(0, ((windowHeight / 2) - 5) - (textHeight / 2));
-
-            // Calculate the horizontal position to center the text
             int horizontalPosition = (windowWidth / 2) - (textWidth / 2);
 
-            // Set the cursor to the vertical center
             Console.SetCursorPosition(0, verticalPosition);
 
-            // Print each line of the text, centering it horizontally
             foreach (string line in textLines)
             {
                 // Set cursor to the horizontal center for each line
