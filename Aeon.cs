@@ -4,21 +4,19 @@ using Aeon.classes;
 namespace Aeon {
     class Program
     {
-        public static Player playerChar = new Player();
-        public static GameWindow mainWindow = new GameWindow();
-        public static LoadScene loadScene = new LoadScene();
+        public static Player               playerChar         = new Player();
+        public static GameWindow           mainWindow         = new GameWindow(playerChar);
+        public static LoadScene            loadScene          = new LoadScene();
+        public static CharacterCreation    characterCreation  = new CharacterCreation(playerChar);
         static void Main() 
         {
             //Start();
             loadScene.Main();
+            characterCreation.Main();
             mainWindow.Main();
         }
         static void Start()
         {
-            Console.OutputEncoding = Encoding.UTF8;
-            Console.WriteLine("Aeon Dungeon");
-            Console.WriteLine("Enter your name: ");
-            playerChar.name = Console.ReadLine();
             Console.WriteLine("Welcome, " + playerChar.name);
         }
     }

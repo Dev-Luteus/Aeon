@@ -13,6 +13,7 @@ namespace Aeon.classes
             Console.OutputEncoding = Encoding.UTF8;
             MainMenuText();
             LoadingSymbolText();
+            Console.Clear(); Console.WriteLine("\x1b[3J");
         }
         static void MainMenuText()
         {
@@ -114,7 +115,7 @@ x          x
                     Thread.Sleep(delay);
                 }
             }
-            stopwatch.Stop(); Console.WriteLine();
+            stopwatch.Stop();
             ClearLoadingArea(frames[0].Split('\n').Length); // Clear the loading symbol after finishing
         }
 

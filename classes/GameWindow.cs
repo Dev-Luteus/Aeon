@@ -2,6 +2,8 @@
 
 namespace Aeon.classes {
     public class GameWindow {
+        static Player playerChar = new Player();
+        
         // Dimensions
         static int mainWindowWidth = 120;        static int mainWindowHeight = 24;
         static int commandWindowHeight = 16;     static int commandWindowWidth = 28;
@@ -20,7 +22,11 @@ namespace Aeon.classes {
         static bool   isCorrectSize   = false;
         static bool   isTyping        = false;
         static bool   needsRedraw     = false;
-
+        
+        public GameWindow(Player player) {
+            playerChar = player; // Save the passed Player instance
+        }
+        
         public void Main() {   
             Console.OutputEncoding = Encoding.UTF8;
             Console.SetWindowSize(Console.LargestWindowWidth, totalHeight); // Initialize
@@ -158,8 +164,8 @@ namespace Aeon.classes {
                            "This is to ensure that the User does not exceed the UserInputWindow, " +
                            "and doesn't overwrite its borders. A long sentence to test the wrapping functionality." +
                            "peepeepoopooo I need more text to make sure that . . . the string can mess up my padding " +
-                           "does that work? w h a t a b o u t t h i s ? Seems my padding is invincible. ";
-            
+                           "does that work? w h a t a b o u t t h i s ? Seems my padding is invincible. " +
+                           $"Welcome, {playerChar.name}!";
             // Display
             MainWindowDialogueManager(story, mainWindowWidth, ref startingRow);
         }
