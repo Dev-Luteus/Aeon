@@ -6,9 +6,11 @@ namespace Aeon {
     {
         public static Player playerChar = new Player();
         public static GameWindow mainWindow = new GameWindow();
+        public static LoadScene loadScene = new LoadScene();
         static void Main()
         {
             //Start();
+            loadScene.Main();
             mainWindow.Main();
         }
         static void Start()
