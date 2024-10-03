@@ -13,7 +13,7 @@ namespace Aeon.classes {
         static int originalWindowHeight          = totalHeight;
         
         // Cursor position (user)
-        static int inputWindowStartX = 5;         static int inputWindowStartY;
+        static int inputWindowStartX = 5;        static int inputWindowStartY;
         
         // Input/Redraw logic variables
         static string userInput = string.Empty;
@@ -27,7 +27,11 @@ namespace Aeon.classes {
             DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight,
                    commandWindowWidth, hudHeight, inputHeight);
             
-            CheckWindowSize();
+            CheckWindowSize(); // Check size on startup (not perfect)
+            
+            /* Known Issues:
+             * - 1: If user starts console in a smaller window, they can still type.
+             * -- 1:1: This is supposedly harmless */
 
             // Task : asynchronous operation. Run code in parallel with main program.
             Task inputTask = null;
@@ -58,7 +62,8 @@ namespace Aeon.classes {
                     inputTask = Task.Run(() => {
                         
                         isTyping = true;
-                        userInput = ReadLimitedInput(30);
+                        Console.ForegroundColor = ConsoleColor.Green; // Green user input text
+                        userInput = ReadLimitedInput(30); Console.ResetColor();
                         isTyping = false;                              // Not infinite input
                         
                         // Process userInput                           :: In User Input Window
@@ -75,6 +80,7 @@ namespace Aeon.classes {
             }
         }
         
+        // Monitor Screen Size Changes
         private void CheckWindowSize() {
             isCorrectSize = (Console.WindowHeight >= totalHeight && Console.WindowWidth >= totalWidth);
         }
@@ -92,7 +98,7 @@ namespace Aeon.classes {
                 if (Console.KeyAvailable)
                 {
                     ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
-                    if (keyInfo.Key == ConsoleKey.Enter)                        // Press Enter : Main --> { 1 }
+                    if (keyInfo.Key == ConsoleKey.Enter) 
                     {
                         // Process input       : (e.g., add to a list of messages)
                         // For now             : clear input
@@ -138,10 +144,6 @@ namespace Aeon.classes {
             
             MainWindowDialogue(mainWindowHeight, mainWindowWidth, ref startingRow);
             Commands(commandWindowHeight, commandWindowWidth, mainWindowWidth, ref commandRow);
-            
-            // int playerCursorPositionX = 5; 
-            // int playerCursorPositionY = mainWindowHeight + hudHeight; 
-            // Console.SetCursorPosition(playerCursorPositionX, playerCursorPositionY);
             
             inputWindowStartY = mainWindowHeight + hudHeight;
             Console.SetCursorPosition(inputWindowStartX, inputWindowStartY);
@@ -198,7 +200,7 @@ namespace Aeon.classes {
             CommandWindowText("Command 3: Settings", commandWindowXPosition, ref commandRow);
             CommandWindowText("Command 4: Exit", commandWindowXPosition, ref commandRow);
         }
-
+        
         // Main Window ------------
         static void MainWindow(int height, int width)
         {
@@ -299,10 +301,8 @@ namespace Aeon.classes {
             // Truncate text if too long
             if (text.Length > maxWidth) { text = text.Substring(0, maxWidth); }
 
-            // Calculate, center text //int leftPadding = (width - text.Length) / 2;
-            
-            int leftPadding = 3;
-            if (leftPadding < 0) leftPadding = 0; // Ensure within bounds
+            // Center text:                                            // int leftPadding = (width - text.Length) / 2;
+            int leftPadding = 3; if (leftPadding < 0) leftPadding = 0; // Ensure within bounds
 
             // Check if current row within area
             if (row > 0 && row < Console.WindowHeight - 1)
