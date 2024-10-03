@@ -14,10 +14,11 @@ namespace Aeon {
             loadScene.Main();
             characterCreation.Main();
             mainWindow.Main();
+            
         }
         static void Start()
         {
-            Console.WriteLine("Welcome, " + playerChar.name);
+            //Console.WriteLine("Welcome, " + playerChar.name);
         }
     }
 }
