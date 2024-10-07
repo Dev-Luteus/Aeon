@@ -5,24 +5,24 @@ namespace Aeon.classes {
         static Player playerChar = new Player();
         
         // Dimensions
-        static int mainWindowWidth = 120;        static int mainWindowHeight = 24;
-        static int commandWindowHeight = 16;     static int commandWindowWidth = 28;
-        static int hudHeight = 2;                static int inputHeight = 2;
+        public static int mainWindowWidth = 120;        public static int mainWindowHeight = 24;
+        public static int commandWindowHeight = 16;     public static int commandWindowWidth = 28;
+        public static int hudHeight = 2;                public static int inputHeight = 2;
         
-        static int totalWidth                    = mainWindowWidth + commandWindowWidth;
-        static int totalHeight                   = mainWindowHeight + hudHeight + inputHeight;
-        static int originalWindowWidth           = Console.LargestWindowWidth;
-        static int originalWindowHeight          = totalHeight;
+        public static int totalWidth                 = mainWindowWidth + commandWindowWidth;
+        public static int totalHeight                   = mainWindowHeight + hudHeight + inputHeight;
+        public static int originalWindowWidth           = Console.LargestWindowWidth;
+        public static int originalWindowHeight          = totalHeight;
         
         // Cursor position (user)
-        static int inputWindowStartX = 5;        static int inputWindowStartY;
+        public static int inputWindowStartX = 5;        static int inputWindowStartY;
         
         // Input/Redraw logic variables
-        static string userInput       = string.Empty;
-        static bool   isCorrectSize   = false;
-        static bool   isTyping        = false;
-        static bool   needsRedraw     = false;
-        
+        public static string userInput       = string.Empty;
+        public static bool   isCorrectSize   = false;
+        public static bool   isTyping        = false;
+        public static bool   needsRedraw     = false;
+        public static string Story;
         public GameWindow(Player player) {
             playerChar = player; // Save the passed Player instance
         }
@@ -87,7 +87,7 @@ namespace Aeon.classes {
         }
         
         // Monitor Screen Size Changes
-        private void CheckWindowSize() {
+        public static void CheckWindowSize() {
             isCorrectSize = (Console.WindowHeight >= totalHeight && Console.WindowWidth >= totalWidth);
         }
         
@@ -133,7 +133,7 @@ namespace Aeon.classes {
             return input.ToString();
         }
         
-        private void DrawUI(int mainWindowHeight, int mainWindowWidth, int commandWindowHeight, int commandWindowWidth,
+        public static void DrawUI(int mainWindowHeight, int mainWindowWidth, int commandWindowHeight, int commandWindowWidth,
                       int hudHeight, int inputHeight) {
             
             Console.Clear(); Console.WriteLine("\x1b[3J"); // Clear old UI (x1b clears whole)
@@ -158,18 +158,10 @@ namespace Aeon.classes {
         // Main Window Story Text Function ------------
         public static void MainWindowDialogue(int mainWindowHeight, int mainWindowWidth, ref int startingRow)
         {
-            string story = "This is a test of the console window system. " +
-                           "Another test line. A shorter line. Yet another line to test. " +
-                           "Yet another line to test test test test test test test test test test. " +
-                           "This is to ensure that the User does not exceed the UserInputWindow, " +
-                           "and doesn't overwrite its borders. A long sentence to test the wrapping functionality." +
-                           "peepeepoopooo I need more text to make sure that . . . the string can mess up my padding " +
-                           "does that work? w h a t a b o u t t h i s ? Seems my padding is invincible. " +
-                           $"Welcome, {playerChar.name}!";
-            // Display
-            MainWindowDialogueManager(story, mainWindowWidth, ref startingRow);
+            MainWindowDialogueManager(Story, mainWindowWidth, ref startingRow);
         }
-
+        public static void ClearGameWindow() {  }
+        
         // Main Window Story Text Manager Function ------------
         public static void MainWindowDialogueManager(string story, int maxWidth, ref int startingRow)
         {
@@ -208,7 +200,7 @@ namespace Aeon.classes {
         }
         
         // Main Window ------------
-        static void MainWindow(int height, int width)
+        public static void MainWindow(int height, int width)
         {
             Console.SetCursorPosition(0, 0);
             Console.OutputEncoding = Encoding.UTF8;
@@ -252,7 +244,7 @@ namespace Aeon.classes {
         }
 
         // Input Window ------------
-        static void UserInputWindow(int startY, int width, int inputHeight)
+        public static void UserInputWindow(int startY, int width, int inputHeight)
         {
             for (int i = 0; i < inputHeight; i++)
             {
@@ -270,7 +262,7 @@ namespace Aeon.classes {
         }
 
         // Command List Window ------------
-        static void CommandWindow(int height, int width)
+        public static void CommandWindow(int height, int width)
         {
             Console.OutputEncoding = Encoding.UTF8;
             int commandWindowXPosition = 121; // Set X position for command window
@@ -299,7 +291,7 @@ namespace Aeon.classes {
 
         // Display Text Function ------------
         // Center Console Text ------------
-        static void MainWindowTextRegular(string text, int width, ref int row)
+        public static void MainWindowTextRegular(string text, int width, ref int row)
         {
             Console.OutputEncoding = Encoding.UTF8;
             int maxWidth = width - 2;
