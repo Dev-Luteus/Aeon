@@ -15,6 +15,7 @@ namespace Aeon.classes
         {
             // Use '|' as a new line marker (instead of '\n')
             GameWindow.Story = $"Welcome, {playerChar.name}!|" +
+                               $"You are a {playerChar.race}|" +
                                "To your utter fucking demise.";
         }
     }

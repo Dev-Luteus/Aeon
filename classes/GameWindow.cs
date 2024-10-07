@@ -9,13 +9,13 @@ namespace Aeon.classes {
         public static int commandWindowHeight = 16;     public static int commandWindowWidth = 28;
         public static int hudHeight = 2;                public static int inputHeight = 2;
         
-        public static int totalWidth                 = mainWindowWidth + commandWindowWidth;
+        public static int totalWidth                    = mainWindowWidth + commandWindowWidth;
         public static int totalHeight                   = mainWindowHeight + hudHeight + inputHeight;
         public static int originalWindowWidth           = Console.LargestWindowWidth;
         public static int originalWindowHeight          = totalHeight;
         
         // Cursor position (user)
-        public static int inputWindowStartX = 5;        static int inputWindowStartY;
+        public static int inputWindowStartX = 5;        public static int inputWindowStartY;
         
         // Input/Redraw logic variables
         public static string userInput       = string.Empty;
@@ -32,7 +32,6 @@ namespace Aeon.classes {
             Console.SetWindowSize(Console.LargestWindowWidth, totalHeight); // Initialize
             DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight,
                    commandWindowWidth, hudHeight, inputHeight);
-            
             CheckWindowSize(); // Check size on startup (not perfect)
             
             /* Known Issues:

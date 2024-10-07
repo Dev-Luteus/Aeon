@@ -14,7 +14,7 @@ namespace Aeon {
             //Start();
             loadScene.Main();
             characterCreation.Main();
-            story.Main();               // Call Story, to feed into mainWindow
+            story.Main();
             mainWindow.Main();
         }
         static void Start()
