@@ -166,28 +166,40 @@ namespace Aeon.classes {
         public static void MainWindowDialogueManager(string story, int maxWidth, ref int startingRow)
         {
             int maxLineWidth = maxWidth - 4;
-            string[] words = story.Split(' '); // Split into words
-            StringBuilder currentLine = new StringBuilder();
+            
+            // Split the story string based on the '|' marker (make a new line inside other classes)
+            string[] lines = story.Split('|');
 
-            foreach (var word in words)
+            foreach (string line in lines)
             {
-                if (currentLine.Length + word.Length + 1 > maxLineWidth) 
+                string[] words = line.Split(' '); // Split into words
+                StringBuilder currentLine = new StringBuilder();
+
+                foreach (var word in words)
                 {
-                    // Print line, reset
-                    MainWindowTextRegular(currentLine.ToString(), maxWidth, ref startingRow);
-                    currentLine.Clear();
+                    if (currentLine.Length + word.Length + 1 > maxLineWidth)
+                    {
+                        // Print the current line and reset
+                        MainWindowTextRegular(currentLine.ToString(), maxWidth, ref startingRow);
+                        currentLine.Clear();
+                    }
+
+                    if (currentLine.Length > 0)
+                    {
+                        currentLine.Append(" "); // Space before word, if not the first word
+                    }
+
+                    currentLine.Append(word); // Append the word to the current line
                 }
+
                 if (currentLine.Length > 0)
                 {
-                    currentLine.Append(" "); // Space before word, if not first word
-                } 
-                currentLine.Append(word);    // Append word to current line
-            } 
-            if (currentLine.Length > 0)      // Print remaining in currentLine
-            {
-                MainWindowTextRegular(currentLine.ToString(), maxWidth, ref startingRow);
+                    // Print the remaining text in the current line
+                    MainWindowTextRegular(currentLine.ToString(), maxWidth, ref startingRow);
+                }
             }
         }
+
 
         // All the Commands in our CommandWindow()
         public static void Commands(int commandWindowHeight, int commandWindowWidth, int mainWindowWidth, ref int commandRow)

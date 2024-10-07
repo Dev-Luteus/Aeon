@@ -16,20 +16,14 @@ namespace Aeon.classes
         public void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
-            GameWindow.Story = "Aeon Dungeon - Character Creation: " +
-                               "Enter Your Name: ";
+            GameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
+                               "\x1b[92mEnter Your Name:\x1b[39m";
             
             GameWindow.DrawUI(GameWindow.mainWindowHeight, GameWindow.mainWindowWidth, 
                               GameWindow.commandWindowHeight, GameWindow.commandWindowWidth, 
                               GameWindow.hudHeight, GameWindow.inputHeight);
-            
-            playerChar.name = Console.ReadLine();
-            
-            // // Set cursor position for character creation prompts
-            // Console.SetCursorPosition(3, 1);
-            // Console.WriteLine("Aeon Dungeon - Character Creation");
-            // Console.SetCursorPosition(3, 3);
-            // Console.Write("Enter your name: ");
+
+            playerChar.name = GameWindow.ReadLimitedInput(30);
         }
     }
 }
