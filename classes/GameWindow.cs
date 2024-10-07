@@ -5,30 +5,34 @@ namespace Aeon.classes {
         static Player playerChar = new Player();
         
         // Dimensions
-        public static int mainWindowWidth = 120;        public static int mainWindowHeight = 24;
-        public static int commandWindowHeight = 16;     public static int commandWindowWidth = 28;
-        public static int hudHeight = 2;                public static int inputHeight = 2;
+        public int mainWindowWidth     { get; set; } = 120;
+        public int mainWindowHeight    { get; set; } = 24;
+        public int commandWindowHeight { get; set; } = 16;
+        public int commandWindowWidth  { get; set; } = 28;
+        public int hudHeight           { get; set; } = 2;
+        public int inputHeight         { get; set; } = 2;
         
-        public static int totalWidth                    = mainWindowWidth + commandWindowWidth;
-        public static int totalHeight                   = mainWindowHeight + hudHeight + inputHeight;
-        public static int originalWindowWidth           = Console.LargestWindowWidth;
-        public static int originalWindowHeight          = totalHeight;
+        //                              =>  : = : Return This Value
+        public int totalWidth           => mainWindowWidth + commandWindowWidth;
+        public int totalHeight          => mainWindowHeight + hudHeight + inputHeight;
+        public int originalWindowWidth  => Console.LargestWindowWidth;
+        public int originalWindowHeight => totalHeight;
         
         // Cursor position (user)
-        public static int inputWindowStartX = 5;        public static int inputWindowStartY;
+        public int inputWindowStartX = 5;        public int inputWindowStartY;
         
         // Input/Redraw logic variables
-        public static string userInput       = string.Empty;
-        public static bool   isCorrectSize   = false;
-        public static bool   isTyping        = false;
-        public static bool   needsRedraw     = false;
-        public static string Story;
+        public string userInput       = string.Empty;
+        public bool   isCorrectSize   = false;
+        public bool   isTyping        = false;
+        public bool   needsRedraw     = false;
+        public string Story;
         public GameWindow(Player player) {
             playerChar = player; // Save the passed Player instance
         }
         
         public void Main() {   
-            Console.OutputEncoding = Encoding.UTF8;
+            Console.OutputEncoding = Encoding.UTF8; Console.ResetColor();   // Very stupid ( check CharacterCreation )
             Console.SetWindowSize(Console.LargestWindowWidth, totalHeight); // Initialize
             DrawUI(mainWindowHeight, mainWindowWidth, commandWindowHeight,
                    commandWindowWidth, hudHeight, inputHeight);
@@ -86,14 +90,14 @@ namespace Aeon.classes {
         }
         
         // Monitor Screen Size Changes
-        public static void CheckWindowSize() {
+        public void CheckWindowSize() {
             isCorrectSize = (Console.WindowHeight >= totalHeight && Console.WindowWidth >= totalWidth);
         }
         
         /* I want to limit the amount of characters a user can type, BEFORE a message is sent.
          * This is to ensure that the User does not exceed the UserInputWindow, and doesn't overwrite its borders.
          * Since a String is actually an array of characters, a string builder can limit the size of that array.*/
-        public static string ReadLimitedInput(int maxChars)
+        public string ReadLimitedInput(int maxChars)
         {
             StringBuilder input = new StringBuilder();
             Console.SetCursorPosition(inputWindowStartX, inputWindowStartY);
@@ -132,7 +136,7 @@ namespace Aeon.classes {
             return input.ToString();
         }
         
-        public static void DrawUI(int mainWindowHeight, int mainWindowWidth, int commandWindowHeight, int commandWindowWidth,
+        public void DrawUI(int mainWindowHeight, int mainWindowWidth, int commandWindowHeight, int commandWindowWidth,
                       int hudHeight, int inputHeight) {
             
             Console.Clear(); Console.WriteLine("\x1b[3J"); // Clear old UI (x1b clears whole)
@@ -155,7 +159,7 @@ namespace Aeon.classes {
         }
         
         // Main Window Story Text Function ------------
-        public static void MainWindowDialogue(int mainWindowHeight, int mainWindowWidth, ref int startingRow)
+        public void MainWindowDialogue(int mainWindowHeight, int mainWindowWidth, ref int startingRow)
         {
             MainWindowDialogueManager(Story, mainWindowWidth, ref startingRow);
         }

@@ -7,8 +7,8 @@ namespace Aeon {
         public static Player               playerChar         = new Player();
         public static GameWindow           mainWindow         = new GameWindow(playerChar);
         public static LoadScene            loadScene          = new LoadScene();
-        public static CharacterCreation    characterCreation  = new CharacterCreation(playerChar);
-        public static StoryString          story              = new StoryString(playerChar);
+        public static CharacterCreation    characterCreation  = new CharacterCreation(playerChar, mainWindow);
+        public static StoryString          story              = new StoryString(playerChar, mainWindow);
         static void Main() 
         {
             //Start();

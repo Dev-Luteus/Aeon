@@ -10,7 +10,7 @@ public class Player
     public int armor             { get; set; }
     public int potions           { get; set; }
     public int coins             { get; set; }
-    
+
     // Constructor
 //     public Player(string name, string race, string rpgClass, int health, int damage, int armor, int potions, int coins)
 //     {
