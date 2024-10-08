@@ -19,10 +19,7 @@ namespace Aeon.classes
             Console.OutputEncoding = Encoding.UTF8;
             Console.SetWindowSize(Console.LargestWindowWidth, gameWindow.totalHeight); // Initialize
             gameWindow.CheckWindowSize();
-            
-            gameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
-                               "\x1b[93mEnter Your Name:\x1b[39m";
-            
+            Introduction(); // Before Draw
             gameWindow.DrawUI(gameWindow.mainWindowHeight, gameWindow.mainWindowWidth, 
                               gameWindow.commandWindowHeight, gameWindow.commandWindowWidth, 
                               gameWindow.hudHeight, gameWindow.inputHeight);
@@ -61,29 +58,9 @@ namespace Aeon.classes
                         // -----
                         gameWindow.isTyping = true;
                         
-                        // -- Name
-                        playerChar.name = gameWindow.ReadLimitedInput(20);
-                        
-                        // -- Race
-                        gameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
-                               "\x1b[93mEnter Your Race:\x1b[39m"; gameWindow.needsRedraw = true;
-                        playerChar.race = gameWindow.ReadLimitedInput(15);
-                        
-                        // -- Class ( loop for valid input )
-                        bool validClassEntered = false;
-                        while (!validClassEntered)
-                        {
-                            gameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
-                                   "\x1b[93mEnter Your Class (Crusader, Graverobber, or Occultist):\x1b[39m";
-                            gameWindow.needsRedraw = true;
-                            
-                            string className = gameWindow.ReadLimitedInput(15).ToLower();
-                            
-                            if (validClasses.Contains(className)) { // Try valid, else Catch (loop : retry)
-                                try { rpgClasses.ApplyClass(playerChar, className); validClassEntered = true;
-                                } catch (ArgumentException) { }
-                            }
-                        }
+                        AssignName();                        
+                        AssignRace();
+                        AssignRPGClass();
                         
                         // -----
                         gameWindow.isTyping = false;                              // Not infinite input
@@ -97,6 +74,42 @@ namespace Aeon.classes
                     inputTask = null;
                 }
                 Thread.Sleep(100); // Reduce CPU usage with a delay
+            }
+        }
+        private void Introduction() {
+            gameWindow.Story = "";
+        }
+        private void AssignName() {
+            bool validClassEntered = false;
+            while (!validClassEntered) {
+                gameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
+                   "\x1b[93mEnter Your Name:\x1b[39m"; 
+                gameWindow.needsRedraw = true;
+                playerChar.name = gameWindow.ReadLimitedInput(20);
+            }
+        }
+
+        private void AssignRace() {
+            gameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
+                               "\x1b[93mEnter Your Race:\x1b[39m"; 
+            gameWindow.needsRedraw = true;
+            playerChar.race = gameWindow.ReadLimitedInput(15);
+        }
+        private void AssignRPGClass() {
+            // loop for valid input 
+            bool validClassEntered = false;
+            while (!validClassEntered)
+            {
+                gameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
+                       "\x1b[93mEnter Your Class (Crusader, Graverobber, or Occultist):\x1b[39m";
+                gameWindow.needsRedraw = true;
+                
+                string className = gameWindow.ReadLimitedInput(15).ToLower();
+                
+                if (validClasses.Contains(className)) { // Try valid, else Catch (loop : retry)
+                    try { rpgClasses.ApplyClass(playerChar, className); validClassEntered = true;
+                    } catch (ArgumentException) { }
+                }
             }
         }
         private void CharacterCreationString()
