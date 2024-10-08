@@ -1,13 +1,13 @@
-using System.Net;
 using System.Text;
 
 namespace Aeon.classes
 {
     public class CharacterCreation
-    {
-        private Player playerChar;
-        private readonly GameWindow gameWindow; // Readonly = get (no set)
-
+    {                           
+        private Player playerChar;                // Readonly = get (no set)
+        private readonly GameWindow gameWindow;   // List to define Valid and Non-Valid class input
+        private readonly List<string> validClasses = new List<string> { "crusader", "graverobber", "occultist" };
+        
         // Constructor to accept the Player instance
         public CharacterCreation(Player player, GameWindow gameWindow)
         {
@@ -58,21 +58,36 @@ namespace Aeon.classes
                     inputTask = Task.Run(() => {
                         
                         Console.ForegroundColor = ConsoleColor.Green;           // Initial        ( very stupid )
-                        gameWindow.isTyping = true;
                         // -----
-                        playerChar.name = gameWindow.ReadLimitedInput(30);
-                    
-                        gameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
-                               "\x1b[93mEnter Your Race:\x1b[39m";
-                        gameWindow.needsRedraw = true;
+                        gameWindow.isTyping = true;
                         
-                        playerChar.race = gameWindow.ReadLimitedInput(30);
+                        // -- Name
+                        playerChar.name = gameWindow.ReadLimitedInput(20);
+                        
+                        // -- Race
+                        gameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
+                               "\x1b[93mEnter Your Race:\x1b[39m"; gameWindow.needsRedraw = true;
+                        playerChar.race = gameWindow.ReadLimitedInput(15);
+                        
+                        // -- Class ( loop for valid input )
+                        bool validClassEntered = false;
+                        while (!validClassEntered)
+                        {
+                            gameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
+                                   "\x1b[93mEnter Your Class (Crusader, Graverobber, or Occultist):\x1b[39m";
+                            gameWindow.needsRedraw = true;
+                            
+                            string className = gameWindow.ReadLimitedInput(15).ToLower();
+                            
+                            if (validClasses.Contains(className)) { // Try valid, else Catch (loop : retry)
+                                try { rpgClasses.ApplyClass(playerChar, className); validClassEntered = true;
+                                } catch (ArgumentException) { }
+                            }
+                        }
                         
                         // -----
                         gameWindow.isTyping = false;                              // Not infinite input
                         
-                        
-                        // Process userInput                           :: In User Input Window
                         Console.SetCursorPosition(gameWindow.inputWindowStartX, gameWindow.inputWindowStartY);
                         done = true;
                     });
@@ -83,6 +98,10 @@ namespace Aeon.classes
                 }
                 Thread.Sleep(100); // Reduce CPU usage with a delay
             }
+        }
+        private void CharacterCreationString()
+        {
+            
         }
     }
 }
