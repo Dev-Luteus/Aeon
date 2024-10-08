@@ -80,13 +80,12 @@ namespace Aeon.classes
             gameWindow.Story = "";
         }
         private void AssignName() {
-            bool validClassEntered = false;
-            while (!validClassEntered) {
+            
                 gameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
                    "\x1b[93mEnter Your Name:\x1b[39m"; 
                 gameWindow.needsRedraw = true;
                 playerChar.name = gameWindow.ReadLimitedInput(20);
-            }
+            
         }
 
         private void AssignRace() {
@@ -111,10 +110,6 @@ namespace Aeon.classes
                     } catch (ArgumentException) { }
                 }
             }
-        }
-        private void CharacterCreationString()
-        {
-            
         }
     }
 }
