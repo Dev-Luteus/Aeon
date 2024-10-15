@@ -42,8 +42,8 @@ namespace Aeon.classes
                         Console.Clear(); Console.WriteLine("\x1b[3J"); // Won't clear fully otherwise
                     } 
                     else if (!wasCorrectSize) { gameWindow.needsRedraw = true; }  // if not correct size
-                }
-                                                                       // if not correct size
+                }           
+                                                                                  // if not correct size
                 if (gameWindow.needsRedraw) {
                     Console.ResetColor();
                     gameWindow.DrawUI(gameWindow.mainWindowHeight, gameWindow.mainWindowWidth, gameWindow.commandWindowHeight, 
@@ -66,8 +66,7 @@ namespace Aeon.classes
                         Console.SetCursorPosition(gameWindow.inputWindowStartX, gameWindow.inputWindowStartY);
                     });
                 }
-                if (inputTask != null && inputTask.IsCompleted)
-                {
+                if (inputTask != null && inputTask.IsCompleted) {
                     inputTask = null;
                 }
                 Thread.Sleep(100); // Reduce CPU usage with a delay
@@ -100,10 +99,10 @@ namespace Aeon.classes
         private void AssignRPGClass() {
             // loop for valid input 
             bool validClassEntered = false;
-            while (!validClassEntered)
-            {
+            while (!validClassEntered) {
                 gameWindow.Story = "Welcome to the Aeon Dungeon character creator. |" +
                        "\x1b[93mEnter Your Class (Crusader, Graverobber, or Occultist):\x1b[39m";
+                
                 Console.Clear(); Console.WriteLine("\x1b[3J");
                 Console.ResetColor();
                 gameWindow.DrawUI(gameWindow.mainWindowHeight, gameWindow.mainWindowWidth, gameWindow.commandWindowHeight, 
